@@ -15,8 +15,9 @@
             response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
         %>
 
+       
     </head>
-    <body>
+    <body >
         <h1>You have Successfully Logged In !</h1>
         <h5><a href="logout" >Log Out</a></h5>
     </body>

@@ -26,6 +26,7 @@ public class Login implements Interceptor {
 
     @Override
     public String intercept(ActionInvocation ai) throws Exception {
+            System.out.println("Intercept method of login interceptor called");
            Map<String, Object> sessionAttributes = ai.getInvocationContext().getSession(); 
            if (sessionAttributes == null || sessionAttributes.get("ID") == null || sessionAttributes.get("role") == null) 
 		{
@@ -35,9 +36,19 @@ public class Login implements Interceptor {
 		else 
 		{
                     System.out.println("Session is Not empty but how");
+                    System.out.println("Role is " + sessionAttributes.get("role"));
 			if (!((String) sessionAttributes.get("ID")).equals("")) 
 			{
-				return ai.invoke();
+                                System.out.println("Inside Intercept method");
+				//return ai.invoke();
+                                if(((String) sessionAttributes.get("role")).equals("1"))
+                                    return "adminHome";
+                                if(((String) sessionAttributes.get("role")).equals("2"))
+                                    return "cafeHome";
+                                if(((String) sessionAttributes.get("role")).equals("3"))
+                                    return "cmcHome";
+                                //if(!((String) sessionAttributes.get("role")).equals("4"))
+                                return "custHome";
 			} 
 			else 
 			{

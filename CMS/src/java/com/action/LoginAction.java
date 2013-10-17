@@ -10,6 +10,12 @@ import com.opensymphony.xwork2.ModelDriven;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import com.model.DatabaseConnection;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 
 /**
@@ -32,26 +38,45 @@ public class LoginAction extends ActionSupport implements ModelDriven<Object>,Se
     {
         return "success";
     }
-    
-    public String check()
-    {
-        return "success";
-    }
-    
+       
     public String loginCheck()
-    {        
-        System.out.println(usr.getUserID() + usr.getPass());
-        if (usr.getUserID().equals("201212065") && usr.getPass().equals("123"))
+    {                
+        String args[]=new String[2];
+        ResultSet rs = null;
+        DatabaseConnection dbc = new DatabaseConnection();
+        //Connection conn = dbc.connect();
+        String query = " select * from users where ID = ? and pass = ?";
+        args[0]=usr.getUserID();
+        args[1]=usr.getPass();
+        
+        try {
+             rs = dbc.getResult(query,args);        
+        } catch (Exception ex) 
         {
-            session.put("ID","201212065");
-            session.put("role","4");
-            return "success";
+            System.out.println("Some error during action method");
+            //Logger.getLogger(LoginAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        else
+        //System.out.println(usr.getUserID() + usr.getPass());        
+        try{                    
+            if (rs.next())
+            {
+                session.put("ID",rs.getString(1));
+                session.put("role",rs.getString(3));
+                dbc.close();
+                return "success";
+            }
+            else
+            {
+                addActionError("Id or Password Incorrect");
+                return "login";
+            }
+        }
+        catch(Exception e)
         {
-            addActionError("Id or Password Incorrect");
-            return "login";
-        }
+            System.out.println("Error while setting sessions ");
+            return "error";
+        }       
+        
     }
     
     public String logOut()

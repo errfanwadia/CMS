@@ -10,10 +10,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Login Page</title>
+         <SCRIPT type="text/javascript">
+            window.history.forward();
+            function noBack() { window.history.forward(); }
+        </SCRIPT>
+        
     </head>
     <s:head />
-    <body>
+    <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
         
     <s:actionmessage />
 
@@ -23,7 +28,6 @@
 		<s:textfield name="userID" placeholder="Username" label="Username" />
 		<s:password name="pass" placeholder="Password" label="Password" />
 		<s:submit value="Submit" />
-    </s:form>
-    <a href="check">Check</a>
+    </s:form>    
     </body>
 </html>
