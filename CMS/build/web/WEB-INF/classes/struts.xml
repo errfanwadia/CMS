@@ -7,14 +7,58 @@
     <constant name="struts.devMode" value="true" ></constant>
     <package name="default" extends="struts-default">
         <interceptors>
+            
+    <!-- Common interceptor and interceptor stack -->
     <interceptor name="login"
             class="com.interceptor.Login">
     </interceptor>
-    <interceptor-stack name="myStack">
+    
+    <interceptor name="adminInterceptor"
+            class="com.interceptor.AdminInterceptor">        
+    </interceptor>
+    
+    <interceptor name="cafeIntercept" 
+                 class="com.interceptor.CafeInterceptor" >
+    </interceptor>
+    
+    <interceptor name="cmcInterceptor"
+                 class="com.interceptor.CMCInterceptor">
+    </interceptor>
+    
+    <interceptor name="custInterceptor"    
+                class="com.interceptor.CustomerInterceptor" >
+    </interceptor>
+        
+    
+    
+    <interceptor-stack name="commonStack">
         <interceptor-ref name="login" />
         <interceptor-ref name="defaultStack" />
     </interceptor-stack>
+    
+    <interceptor-stack name="adminStack">
+        <interceptor-ref name="adminInterceptor" >           
+        </interceptor-ref>
+    </interceptor-stack>
+        
+    <interceptor-stack name="cafeStack">
+        <interceptor-ref name="cafeIntercept">           
+        </interceptor-ref>
+    </interceptor-stack>
+    
+    <interceptor-stack name="cmcStack">
+        <interceptor-ref name="cmcInterceptor">           
+        </interceptor-ref>
+    </interceptor-stack>
+    
+    <interceptor-stack name="custStack">
+        <interceptor-ref name="custInterceptor">            
+        </interceptor-ref>       
+    </interceptor-stack>
+    
 </interceptors>
+
+
     <global-results>
 		<result name="login">/login.jsp</result>
     </global-results>
@@ -25,15 +69,18 @@
     <action name="loginCheck" class="com.action.LoginAction" method="loginCheck">
 	<result name="success" type="redirect">homeAction.action</result>       
 	<result name="login">/login.jsp</result>
+        <result name="error">/error.jsp</result>
     </action>
 
-    <action name="check" class="com.action.LoginAction" method="check">
-        <result name="success" >/home.jsp</result>
-    </action>
     <!-- home link action -->
     <action name="homeAction" class="com.action.LoginAction" method="home">
-	<interceptor-ref name="myStack" />
-	<result name="success">/WEB-INF/Pages/home.jsp</result>
+	<interceptor-ref name="commonStack" />
+	<result name="adminHome">/WEB-INF/Pages/admin/adminHome.jsp</result>
+        <result name="cafeHome">/WEB-INF/Pages/cafe/cafeHome.jsp</result>
+        <result name="cmcHome">/WEB-INF/Pages/cmc/cmcHome.jsp</result>
+        <result name="custHome">/WEB-INF/Pages/customer/custHome.jsp</result>
+        <result name="login">/login.jsp</result>
+        <result name="error">/error.jsp</result>
     </action>
 
 <!--   logout action  -->
