@@ -4,88 +4,711 @@
 
 <struts>
     <!-- Configuration for the default package. -->
-    <constant name="struts.devMode" value="true" ></constant>
-    <package name="default" extends="struts-default">
+    <constant name="struts.devMode" value="true" ></constant>   
+    <package name="default" namespace="/" extends="struts-default">
+        <!--
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult" ></result-type>
+        </result-types>
+        -->
         <interceptors>
             
-    <!-- Common interceptor and interceptor stack -->
-    <interceptor name="login"
-            class="com.interceptor.Login">
-    </interceptor>
+            <!-- Common interceptor and interceptor stack -->
+            <interceptor name="login"
+                 class="com.interceptor.Login">
+            </interceptor>
     
-    <interceptor name="adminInterceptor"
-            class="com.interceptor.AdminInterceptor">        
-    </interceptor>
+            <interceptor name="adminInterceptor"
+                 class="com.interceptor.AdminInterceptor">        
+            </interceptor>
     
-    <interceptor name="cafeIntercept" 
+            <interceptor name="cafeIntercept" 
                  class="com.interceptor.CafeInterceptor" >
-    </interceptor>
+            </interceptor>
     
-    <interceptor name="cmcInterceptor"
+            <interceptor name="cmcInterceptor"
                  class="com.interceptor.CMCInterceptor">
-    </interceptor>
+            </interceptor>
     
-    <interceptor name="custInterceptor"    
-                class="com.interceptor.CustomerInterceptor" >
-    </interceptor>
+            <interceptor name="custInterceptor"    
+                 class="com.interceptor.CustomerInterceptor" >
+            </interceptor>
         
     
     
-    <interceptor-stack name="commonStack">
-        <interceptor-ref name="login" />
-        <interceptor-ref name="defaultStack" />
-    </interceptor-stack>
+            <interceptor-stack name="commonStack">
+                <interceptor-ref name="login" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
     
-    <interceptor-stack name="adminStack">
-        <interceptor-ref name="adminInterceptor" >           
-        </interceptor-ref>
-    </interceptor-stack>
+            <interceptor-stack name="adminStack">
+                <interceptor-ref name="adminInterceptor" >                               
+                </interceptor-ref>
+                  <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
         
-    <interceptor-stack name="cafeStack">
-        <interceptor-ref name="cafeIntercept">           
-        </interceptor-ref>
-    </interceptor-stack>
+            <interceptor-stack name="cafeStack">
+                <interceptor-ref name="cafeIntercept">           
+                </interceptor-ref>
+                  <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
     
-    <interceptor-stack name="cmcStack">
-        <interceptor-ref name="cmcInterceptor">           
-        </interceptor-ref>
-    </interceptor-stack>
+            <interceptor-stack name="cmcStack">
+                <interceptor-ref name="cmcInterceptor">           
+                </interceptor-ref>
+                  <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
     
-    <interceptor-stack name="custStack">
-        <interceptor-ref name="custInterceptor">            
-        </interceptor-ref>       
-    </interceptor-stack>
+            <interceptor-stack name="custStack">
+                <interceptor-ref name="custInterceptor">            
+                </interceptor-ref>       
+                  <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
     
-</interceptors>
+        </interceptors>
 
 
-    <global-results >
-		<result name="login">/login.jsp</result>
-    </global-results>
+        <global-results >
+            <result name="login">/WEB-INF/login.jsp</result>
+        </global-results>
 
 
     
 
-    <action name="loginCheck" class="com.action.LoginAction" method="loginCheck">
-	<result name="success" type="redirect">homeAction.action</result>       
-	<result name="login">/login.jsp</result>
-        <result name="error">/error.jsp</result>
-    </action>
+       <!--  <action name="loginCheck" class="com.action.LoginAction" method="loginCheck">	
+            <result name="adminHome" type="redirectAction">showUsers</result>
+            <result name="cafeHome">/WEB-INF/Pages/cafe/cafeHome.jsp</result>
+            <result name="cmcHome" type="redirectAction">showFeedbacks</result>
+            <result name="custHome">/WEB-INF/Pages/customer/custHome.jsp</result>        
+            <result name="login">login.jsp</result>
+        
+            </action>
+        -->
+    
+        <action name="loginCheck" class="com.action.LoginAction" method="loginCheck">	
+            <result name="success" type="redirectAction">home</result>
+            <result name="login">/WEB-INF/login.jsp</result>
+            <result name="error">error.jsp</result>        
+        </action>
+        
+        <action name="loginPage" class="com.action.LoginAction" method="execute">	           
+            <result name="success">/WEB-INF/login.jsp</result>
+            <result name="error">error.jsp</result>        
+        </action>
+        
+        <action name="forgot" class="com.action.LoginAction" method="execute">	           
+            <result name="success">/WEB-INF/forgot.jsp</result>
+            <result name="error">error.jsp</result>        
+        </action>
+    
+        <action name="forgotPass" class="com.action.LoginAction" method="forgotPass">	           
+            <result name="login">/WEB-INF/login.jsp</result>
+            <result name="error">/WEB-INF/forgot.jsp</result>        
+            <result name="success">/WEB-INF/login.jsp</result>        
+        </action>
+    
+    
+        <action name="home"  class="com.action.LoginAction" method="home">              
+            <interceptor-ref name="defaultStack"></interceptor-ref>        
+            <result name="adminHome" >/WEB-INF/Pages/admin/Test.jsp</result>
+            <result name="cafeHome">/WEB-INF/Pages/cafe/Test.jsp</result>
+            <result name="cmcHome" >/WEB-INF/Pages/cmc/Test.jsp</result>
+            <result name="custHome" >/WEB-INF/Pages/customer/Test.jsp</result>        
+            <result name="login">/WEB-INF/login.jsp</result>
+        </action>
+        
+        <action name="cafeHome" class="com.action.cafe.CafeAction" method="ordHistory">	
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="cafeStack" ></interceptor-ref>           
+            <result name="success">/WEB-INF/Pages/cafe/ordHistory.jsp</result>
+            <result name="login">/WEB-INF/login.jsp</result>
+            <result name="error">error.jsp</result>        
+        </action>
+        <!-- home link action 
+        <action name="loginCheck" class="com.action.LoginAction" method="home">
+             <interceptor-ref name="commonStack" />               
+            <result name="adminHome">/WEB-INF/Pages/admin/adminHome.jsp</result>
+            <result name="cafeHome">/WEB-INF/Pages/cafe/cafeHome.jsp</result>
+            <result name="cmcHome">/WEB-INF/Pages/cmc/cmcHome.jsp</result>
+            <result name="custHome">/WEB-INF/Pages/customer/custHome.jsp</result>
+            <result name="login">/login.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action> -->
 
-    <!-- home link action -->
-    <action name="homeAction" class="com.action.LoginAction" method="home">
-	<interceptor-ref name="commonStack" />
-	<result name="adminHome">/WEB-INF/Pages/admin/adminHome.jsp</result>
-        <result name="cafeHome">/WEB-INF/Pages/cafe/cafeHome.jsp</result>
-        <result name="cmcHome">/WEB-INF/Pages/cmc/cmcHome.jsp</result>
-        <result name="custHome">/WEB-INF/Pages/customer/custHome.jsp</result>
-        <result name="login">/login.jsp</result>
-        <result name="error">/error.jsp</result>
-    </action>
+        <!-- Admin Page Action -->  
+        
+        <action name="insertCanteen" class="com.action.admin.AdminAction" method="insertCanteen">    
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	        
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">viewCanteens</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+            
+        <action name="viewCanteens" class="com.action.admin.AdminAction" method="viewCanteens">                      
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/viewCanteens.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        <action name="editCafe" class="com.action.admin.AdminAction" method="setCafe">                                   
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/editCafe.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="resetPass" class="com.action.admin.AdminAction" method="execute">                        
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param> 
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/resetCafePass.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        <action name="updateCafe" class="com.action.admin.AdminAction" method="updateCafe">                                
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/editCafe.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        
+        <action name="creditBalance" class="com.action.admin.AdminAction" method="creditBalance">     
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	                  
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">credit</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        <action name="debitBalance" class="com.action.admin.AdminAction" method="debitValue">     
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	
+                            
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">debit</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="deleteUser" class="com.action.admin.AdminAction" method="deleteUser">    
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	        
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showUsers</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="deleteRegUser" class="com.action.admin.AdminAction" method="deleteRegUser">    
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	        
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showRegisteredUsers</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+      
+        
+        <action name="showRegisteredUsers" class="com.action.admin.AdminAction" method="showRegUsers">            
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/showRegUsers.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="viewDetails" class="com.action.admin.AdminAction" method="viewDetails">            
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/viewUserDetails.jsp</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="reAssign" class="com.action.admin.AdminAction" method="execute">	
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/reAssign.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
 
-<!--   logout action  -->
-    <action name="logout" class="com.action.LoginAction" method="logOut">
-	<result name="success">/login.jsp</result>
-    </action>
-    </package>
+        
+        <action name="reAssignRFID" class="com.action.admin.AdminAction" method="reAssign"> 
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	           
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showRegisteredUsers</result>
+            <result name="error">error.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+    
+        <action name="activateUser" class="com.action.admin.AdminAction" method="activate">	
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/activateUser.jsp</result>
+            <result name="login">/WEB-INF/login.jsp</result> 
+            <result name="unauth">unauthorized.jsp</result>
+             <result name="unauth">error.jsp</result>
+        </action>
+        
+        <action name="viewUserHistory" class="com.action.admin.AdminAction" method="viewUserHistory">	
+             <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	   
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/viewUserHistory.jsp</result>
+            <result name="login">/WEB-INF/login.jsp</result> 
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        <action name="finalActivate" class="com.action.admin.AdminAction" method="assignRFID">
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	            
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showUsers</result>
+            <result name="login">/WEB-INF/login.jsp</result> 
+            <result name="error">error.jsp</result> 
+            <result name="empty" type="redirectAction">showUsers</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+       
+        <action name="showUsers" class="com.action.admin.AdminAction" method="showUsers">
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/adminHome.jsp</result>
+            <result name="error">error.jsp</result>
+            <result name="input" type="redirectAction">showUsers</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+            
+        <action name="activate" class="com.action.admin.AdminAction" method="activate">	
+            <result name="success" type="redirectAction">showUsers</result>
+            <result name="error">/error.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+                   
+
+        <action name="editProfile" class="com.action.LoginAction" method="execute">	
+            <result name="success">/WEB-INF/Pages/admin/editProfile.jsp</result>
+        </action>
+
+        <action name="credit" class="com.action.LoginAction" method="execute">	
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/credit.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+
+        <action name="debit" class="com.action.LoginAction" method="execute">	
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref> 
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/debit.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+
+        <action name="changePass" class="com.action.LoginAction" method="execute">	
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="resetCafePass" class="com.action.admin.AdminAction" method="resetPass">	
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/resetCafePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="input">/WEB-INF/Pages/admin/resetCafePass.jsp</result>
+        </action>
+        
+        <action name="changeAdminPass" class="com.action.customer.CustomerAction" method="changePass">
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/changePass.jsp</result>
+            <result name="error">/WEB-INF/Pages/admin/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action> 
+
+        <action name="addCanteen" class="com.action.LoginAction" method="execute">	
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/addCanteen.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+
+        <action name="viewCustomer" class="com.action.LoginAction" method="execute">	
+            <interceptor-ref name="adminStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/admin/viewCustomer.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+            
+            
+            
+
+        <!--   logout action  -->
+        <action name="logout" class="com.action.LoginAction" method="logOut">
+            <result name="success">/WEB-INF/login.jsp</result>
+        </action>  
+        
+    
+        <action name="checking" class="com.action.CheckAction" method="check">
+            <result name="success">/check.jsp</result>
+        </action>     
+    
+    
+        <action name="sendMail" class="com.action.Emailer">
+            <result name="success">check.jsp</result>
+            <result name="success">check.jsp</result>
+        </action>
+        <action name="insertRecord" class="com.action.CheckAction" method="insert">
+            <result name="success">/sample.jsp</result>
+        </action>  
+    
+        <action name="registerCustomer" class="com.action.customer.FileUploadAction">
+            <interceptor-ref name="fileUpload">
+                <param name="maximumSize">2097152</param>
+                <param name="allowedTypes" >
+                    image/png,image/gif,image/jpeg,image/pjpeg
+                </param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="success">viewImage.jsp</result>
+            <result name="input">registration.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>   
+      
+      
+        <!-- Below Action is for uploading the image into database   -->
+        <action  name="uploadImage" class="com.action.customer.CustomerAction" method="uploadImage">
+            <interceptor-ref name="fileUpload">
+                <param name="maximumSize">20971522</param>
+                <param name="allowedTypes">image/png,image/gif,image/jpeg,image/pjpeg</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="success">registration.jsp</result>
+            <result name="input">registration.jsp</result>
+            <result name="error">registration.jsp</result>
+        </action>      
+
+        <!--  Customer actions  --> 
+        
+        <action name="rechargeHistory" class="com.action.customer.CustomerAction" method="rechargeHistory">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/rechargeHistory.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>
+        
+        
+         
+        <action name="showAdvanceSearch" class="com.action.customer.CustomerAction" method="success">            
+            <result name="success">advanceSearch.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>
+        
+        <action name="advanceSearch" class="com.action.customer.CustomerAction" method="advanceSearch">
+            
+            <result name="success">advanceSearch.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>
+        
+        <action name="find" class="com.action.customer.CustomerAction" method="checkUser">	
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/fundTransfer2.jsp</result>
+            <result name="notFound">/WEB-INF/Pages/customer/fundTransfer.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>  
+                      
+        <action name="account" class="com.action.customer.CustomerAction" method="getAcc">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/account.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+       
+        <action name="toggleRFID" class="com.action.customer.CustomerAction" method="toggleRFID">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/account.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>                   
+                                  
+        <action name="fundTransfer" class="com.action.customer.CustomerAction" method="fundTransfer">	
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/fundTransfer.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">/WEB-INF/Pages/customer/fundTransfer.jsp</result>
+        </action>   
+        
+        <action name="updateProfile" class="com.action.customer.CustomerAction" method="execute">	
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/updateProfile.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>   
+        
+        
+        <action name="history" class="com.action.customer.CustomerAction" method="history">
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/history.jsp</result>
+            <result name="error">error.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="rechargeHistory" class="com.action.customer.CustomerAction" method="rechargeHistory">
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/rechargeHistory.jsp</result>
+            <result name="error">error.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="transferHistory" class="com.action.customer.CustomerAction" method="transferHistory">
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/transferHistory.jsp</result>
+            <result name="error">error.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="updateUserProfile" class="com.action.customer.CustomerAction" method="updateProfile">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/updateProfile.jsp</result>
+            <result name="error">/WEB-INF/Pages/customer/updateProfile.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action> 
+        
+        <action name="changeUPass" class="com.action.customer.CustomerAction" method="execute" >	
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/changePass.jsp</result>            
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        
+        <action name="changeUserPass" class="com.action.customer.CustomerAction" method="changePass">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/changePass.jsp</result>
+            <result name="error">/WEB-INF/Pages/customer/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action> 
+                                    
+        <action  name="register" class="com.action.customer.CustomerAction" method="registration">
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>
+            <interceptor-ref name="fileUpload">
+                <param name="maximumSize">20971522</param>
+                <param name="allowedTypes">image/png,image/gif,image/jpeg,image/pjpeg</param>
+            </interceptor-ref>
+            <interceptor-ref name="defaultStack"></interceptor-ref>
+            <result name="success">/WEB-INF/login.jsp</result>
+            <result name="input">/WEB-INF/registration.jsp</result>
+            <result name="error">/WEB-INF/registration.jsp</result>
+        </action>
+        
+        <action name="feedback" class="com.action.customer.CustomerAction" method="execute">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/feedback.jsp</result>
+        </action>
+        <action name="giveFeedback" class="com.action.customer.CustomerAction" method="giveFeedback" >
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">home</result>
+            <result name="error">error.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>
+        
+        <action name="transfer" class="com.action.customer.CustomerAction" method="execute">
+            <interceptor-ref name="custStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/customer/fundTransfer.jsp</result>
+        </action>
+        
+        <action name="signUp" class="com.action.LoginAction" method="execute">            
+            <result name="success">/WEB-INF/registration.jsp</result>            
+        </action>
+        
+        <action name="verify" class="com.action.customer.CustomerAction" method="verify">            
+            <result name="verified">/emailVerified.jsp</result>            
+            <result name="error">/emailError.jsp</result>
+            <result name="input">/WEB-INF/login.jsp</result>
+            <result></result>
+        </action>
+        
+        
+        
+        
+        
+        
+        <!-- CMC actions -->     
+                
+        
+        
+        <action name="changecmcpass" class="com.action.cmc.CMCAction" method="execute">
+            <interceptor-ref name="cmcStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cmc/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error">error.jsp</result>
+        </action>  
+        
+        <action name="changeCMCPassword" class="com.action.cmc.CMCAction" method="changePass">
+            <interceptor-ref name="cmcStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cmc/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error">/WEB-INF/Pages/cmc/changePass.jsp</result>
+        </action>  
+         
+                   
+                                         
+        <action name="showFeedbacks" class="com.action.cmc.CMCAction" method="showFeedbacks">
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>
+            <interceptor-ref name="cmcStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cmc/cmcHome.jsp</result>
+        </action>      
+        <action name="viewFeedback" class="com.action.cmc.CMCAction" method="viewFeedback">            
+            <result name="success">/WEB-INF/Pages/cmc/response.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+        </action>      
+        
+      
+        <action name="sendFeedback" class="com.action.cmc.CMCAction" method="reply">
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>
+            <interceptor-ref name="cmcStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showFeedbacks</result>
+            <result name="error">error.jsp</result>
+        </action>
+        
+        <action name="deleteFeedback" class="com.action.cmc.CMCAction" method="deleteFeedback">
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	
+            <interceptor-ref name="cmcStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">showFeedbacks</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>      
+        
+        <action name="findUser" class="com.action.customer.CustomerAction" method="findUser">           
+            <result name="success" type="stream"> 
+                <param name="contentType">image/jpeg</param>
+                <param name="inputName">profile_pic</param>
+            </result>
+        </action>      
+     
+        <action name="getRFID" class="com.action.CheckAction" method="blank">
+            <result name="success">/sample.jsp</result>
+        </action>  
+       
+        <!-- Cafe Actions-->
+        
+        <action name="changecafePass" class="com.action.cafe.CafeAction" method="execute">
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cafe/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error">error.jsp</result>
+        </action>  
+        
+        <action name="changePassword" class="com.action.cafe.CafeAction" method="changePass">
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cafe/changePass.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error">/WEB-INF/Pages/cafe/changePass.jsp</result>
+        </action>  
+                
+        
+        <action name="tap" class="com.action.cafe.CafeAction" method="execute">    
+            <interceptor-ref name="store">
+                <param name="operationMode">RETRIEVE</param>
+            </interceptor-ref>        
+            <result name="success">/WEB-INF/Pages/cafe/tap.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action> 
+        
+        
+        <action name="getUserData" class="com.action.cafe.CafeAction" method="getUserData"> 
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	           
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cafe/placeOrder.jsp</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="notFound" type="redirectAction">tap</result>
+            <result name="error">error.jsp</result>
+        </action>         
+        <action name="placeOrder" class="com.action.cafe.CafeAction" method="placeOrder"> 
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	           
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">tap</result>
+            <result name="unauth">unauthorized.jsp</result>
+            <result name="error">error.jsp</result>
+        </action>       
+        
+        <action name="rollback" class="com.action.cafe.CafeAction" method="rollback"> 
+            <interceptor-ref name="store">
+                <param name="operationMode">STORE</param>
+            </interceptor-ref>	           
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success" type="redirectAction">cafeHome</result>
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error" type="redirectAction">cafeHome</result>
+        </action>    
+        
+        <action name="rollbackedHistory" class="com.action.cafe.CafeAction" method="rollbackedHistory">             
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cafe/rollbacked.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error" type="redirectAction">cafeHome</result>
+        </action>      
+        
+        <action name="withdrawHistory" class="com.action.cafe.CafeAction" method="withdrawHistory">             
+            <interceptor-ref name="cafeStack" ></interceptor-ref>
+            <result name="success">/WEB-INF/Pages/cafe/withdraw.jsp</result>           
+            <result name="unauth">unauthorized.jsp</result>            
+            <result name="error" type="redirectAction">cafeHome</result>
+        </action>       
+                                        
+    </package> 
 </struts>

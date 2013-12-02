@@ -13,7 +13,7 @@ import com.opensymphony.xwork2.interceptor.Interceptor;
         
 import java.util.Map;
 public class Login implements Interceptor {
-
+    private String ID;
     @Override
     public void destroy() {
       
@@ -39,7 +39,9 @@ public class Login implements Interceptor {
                     System.out.println("Role is " + sessionAttributes.get("role"));
 			if (!((String) sessionAttributes.get("ID")).equals("")) 
 			{
-                                System.out.println("Inside Intercept method");
+                                ai.invoke();
+                              /*  ID=(String)sessionAttributes.get("ID");
+                                System.out.println("Inside Intercept method with ID " + ID );
 				//return ai.invoke();
                                 if(((String) sessionAttributes.get("role")).equals("1"))
                                     return "adminHome";
@@ -49,12 +51,14 @@ public class Login implements Interceptor {
                                     return "cmcHome";
                                 //if(!((String) sessionAttributes.get("role")).equals("4"))
                                 return "custHome";
+                                 */
 			} 
-			else 
-			{
-				return "login";
-			}
+			//else 
+			//{
+			//	return "login";
+			//}
 		}
+           return "login";
     }
     
 }

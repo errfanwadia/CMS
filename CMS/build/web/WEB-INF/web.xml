@@ -10,10 +10,20 @@
     </filter-mapping>
     <session-config>
         <session-timeout>
-            30
+            15
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
-    </welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>        
+<error-page>
+        <error-code>404</error-code>
+    <location>/error.jsp</location>
+</error-page>
+
+    
+            
+    <listener>
+		<listener-class>Struts2ListenerOnGAE</listener-class>
+    </listener>
 </web-app>

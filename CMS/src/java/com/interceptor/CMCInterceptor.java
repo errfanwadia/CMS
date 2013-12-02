@@ -27,7 +27,7 @@ public class CMCInterceptor extends ActionSupport implements Interceptor {
 
     @Override
     public String intercept(ActionInvocation ai) throws Exception {
-            System.out.println("Intercept method of login interceptor called");
+            System.out.println("Intercept method of CMC interceptor called");
            Map<String, Object> sessionAttributes = ai.getInvocationContext().getSession(); 
            if (sessionAttributes == null || sessionAttributes.get("ID") == null || sessionAttributes.get("role") == null) 
 		{

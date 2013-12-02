@@ -5,18 +5,33 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="/struts-tags" prefix="s" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Customer Home Page</title>
-        <% response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");//HTTP 1.1
-            response.setHeader("Pragma","no-cache"); //HTTP 1.0
-            response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
-        %>
+        <SCRIPT type="text/javascript">
+            window.history.forward();
+            function noBack() {
+                window.history.forward();
+            }
+        </SCRIPT>  
+        <% response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");//HTTP 1.1
+            response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+            response.setDateHeader("Expires", 0); //prevents caching at the proxy server
+%>
+
     </head>
-    <body>
-        <h1>Welcome Customer!</h1>
-         <h5><a href="logout" >Log Out</a></h5>
+    <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">                 
+        <%@include  file="customerHeader.jsp" %> 
+        <div style="width: 50%; color: red;">
+            <s:actionmessage />
+            <s:actionerror />
+        </div>
+        <h1>Welcome Customer!</h1>        
+        <%@include  file="customerFooter.jsp" %> 
+
     </body>
+
 </html>
